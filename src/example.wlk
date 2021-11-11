@@ -44,7 +44,7 @@ class Invitado{
 	var criterioConformidad
 	
 	method estaDisfrazado(){
-		return disfraz.puntaje() > 0
+		return disfraz.puntaje(self) > 0
 	}
 	
 	method puntosDisfraz(){
@@ -65,14 +65,20 @@ class Invitado{
 	
 	method realizarCanje(persona){
 		self.validarCanje(persona)
-		if(!self.estaConformeConDisfraz() or !persona.estaConformeConDisfraz()){
-			
-		}
+		self.cambiarTrajeCon(persona)
 	}
 	
 	method validarCanje(persona){
-		return self.estaEnMismaFiestaQue(persona) and () and
-		
+		return self.estaEnMismaFiestaQue(persona) and
+		(!self.estaConformeConDisfraz() or !persona.estaConformeConDisfraz()) and 
+		(self.cambiandoTrajesEstaConforme(persona) and 
+		(persona.cambiandoTrajesEstaConforme(self))) 
+	}
+	
+	method cambiarTrajeCon(persona){
+		const disfrazACambiar = disfraz
+		disfraz = persona.disfraz()
+		persona.disfraz(disfrazACambiar)
 	}
 	
 	method estaEnMismaFiestaQue(persona){
@@ -82,9 +88,13 @@ class Invitado{
 	method cambiandoTrajesEstaConforme(persona){
 		const disfrazOriginal = disfraz
 		disfraz = persona.disfraz()
-		return self.estaConformeConDisfraz()
-		
-	}
+		if(self.estaConformeConDisfraz()){
+		   disfraz = disfrazOriginal
+           return true
+		} else 
+		disfraz = disfrazOriginal
+		return false
+	   }
 	
 }
 
